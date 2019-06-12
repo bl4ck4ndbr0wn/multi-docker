@@ -21,3 +21,16 @@ after_success:
   - docker push alphanganga/multi-nginx
   - docker push alphanganga/multi-server
   - docker push alphanganga/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-east-2-792193902576
+  bucket_path: multi-docker
+  on:
+    branch: develop
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
