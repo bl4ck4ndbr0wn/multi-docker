@@ -17,7 +17,7 @@ after_success:
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_ID --password-stdin
   # Push all this version to dockerhub
-  - docker push alphanganga/multi-client
-  - docker push alphanganga/multi-nginx
-  - docker push alphanganga/multi-server
-  - docker push alphanganga/multi-worker
+docker push alphanganga/multi-client
+docker push alphanganga/multi-nginx
+docker push alphanganga/multi-server
+docker push alphanganga/multi-worker
