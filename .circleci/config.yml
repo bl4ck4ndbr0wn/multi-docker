@@ -1,17 +1,17 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/app
     docker:
-      - image: circleci/node
+      - image: circleci/node:4.8.2
+    working_directory: ~/app
     steps:
       - checkout
       - run:
-          name: CD into client directory
-          command: cd ./client
-      - run:
           name: Update npm
           command: "sudo npm install -g npm@latest"
+      - run:
+          name: CD into client directory
+          command: cd ./client
       - restore_cache:
           key: dependancy-cache-{{ checksum "package.json" }}
       - run:
@@ -46,7 +46,8 @@ workflows:
     jobs:
       - build
       - test:
-          requires: -build
+          requires:
+            - build
           filters:
             branches:
               only: develop
