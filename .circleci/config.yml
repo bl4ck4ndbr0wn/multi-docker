@@ -1,14 +1,52 @@
 version: 2
 jobs:
   build:
-    docker:
-      context: ../client
-      dockerfile: Dockerfile.dev
-
     working_directory: ~/app
-
+    docker:
+      - image: circleci/node
     steps:
       - checkout
       - run:
-        name: Run test
-        command: docker run -e "CI=true" alphanganga/client-test npm run test -- --coverage
+          name: CD into client directory
+          command: cd ./client
+      - run:
+          name: Update npm
+          command: "sudo npm install -g npm@latest"
+      - restore_cache:
+          key: dependancy-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install dependancies
+          command: npm install
+      - save_cache:
+          key: dependancy-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+  test:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: npm test
+      - run:
+          name: Generate code coverage
+          command: "./node_modules/.bin/nyc report --reporter=text-lcov"
+      - store_artifacts:
+          path: test-results.xml
+          prefix: tests
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires: -build
+          filters:
+            branches:
+              only: develop
