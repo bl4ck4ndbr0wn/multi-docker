@@ -11,16 +11,16 @@ jobs:
           command: "sudo npm install -g npm@latest"
       - run:
           name: Install dependancies
-          command: cd client && npm install
+          command: "cd client && npm install"
 
   test:
     docker:
-      - image: circleci/node
+      - image: circleci/node:4.8.2
     steps:
       - checkout
       - run:
           name: Test
-          command: cd client && npm test
+          command: "cd client && npm test"
       - run:
           name: Generate code coverage
           command: "./client/node_modules/.bin/nyc report --reporter=text-lcov"
