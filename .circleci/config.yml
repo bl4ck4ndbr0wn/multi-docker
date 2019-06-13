@@ -10,17 +10,8 @@ jobs:
           name: Update npm
           command: "sudo npm install -g npm@latest"
       - run:
-          name: CD into client directory
-          command: cd ./client
-      - restore_cache:
-          key: dependancy-cache-{{ checksum "package.json" }}
-      - run:
           name: Install dependancies
-          command: npm install
-      - save_cache:
-          key: dependancy-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+          command: cd client && npm install
 
   test:
     docker:
@@ -29,10 +20,10 @@ jobs:
       - checkout
       - run:
           name: Test
-          command: npm test
+          command: cd client && npm test
       - run:
           name: Generate code coverage
-          command: "./node_modules/.bin/nyc report --reporter=text-lcov"
+          command: "./client/node_modules/.bin/nyc report --reporter=text-lcov"
       - store_artifacts:
           path: test-results.xml
           prefix: tests
